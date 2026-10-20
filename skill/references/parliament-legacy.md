@@ -1,3 +1,8 @@
+> 🗄️ **Legacy (v4) — 历史参考 / historical reference**
+> 这是早期固定管线脚本（parliament.js / orchestrator.js，位于 `~/Desktop`）的说明，
+> **已不再是推荐做法**。当前实现与哲学见 `tools/hermes-tools.js` 与 `../../README.md`。
+> These scripts hardcoded a pipeline; the project now lets Hermes decide each step.
+
 Location: ~/Desktop/parliament.js (v4, 23796 bytes)
 Usage: node parliament.js <command>
 Commands:

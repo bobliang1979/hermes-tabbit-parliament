@@ -1,0 +1,46 @@
+{
+  "name": "hermes-tabbit-parliament",
+  "version": "2.0.0",
+  "description": "Multi-model AI parliament: Hermes drives 5 AI chat tabs in Tabbit Browser over CDP — zero dependencies",
+  "license": "MIT",
+  "author": "bobliang1979",
+  "homepage": "https://github.com/bobliang1979/hermes-tabbit-parliament",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bobliang1979/hermes-tabbit-parliament.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bobliang1979/hermes-tabbit-parliament/issues"
+  },
+  "keywords": [
+    "cdp",
+    "chrome-devtools-protocol",
+    "multi-model",
+    "parliament",
+    "orchestration",
+    "tabbit",
+    "hermes"
+  ],
+  "bin": {
+    "hermes-tools": "tools/hermes-tools.js"
+  },
+  "main": "tools/hermes-tools.js",
+  "files": [
+    "tools",
+    "skill",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "models": "node tools/hermes-tools.js models",
+    "list": "node tools/hermes-tools.js list",
+    "doctor": "node tools/hermes-tools.js doctor",
+    "test": "node --test test/hermes-tools.test.js test/cli.test.js",
+    "test:watch": "node --test --watch test/hermes-tools.test.js test/cli.test.js"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
