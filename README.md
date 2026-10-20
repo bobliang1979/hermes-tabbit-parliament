@@ -1,824 +1,363 @@
 <div align="center">
 
-
-
 # 🧠 Hermes Tabbit Parliament
-
-
 
 **多模型 AI 议会协作框架 · Multi-Model AI Parliament Framework**
 
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Node](https://img.shields.io/badge/node-%E2%89%A522-brightgreen.svg)](https://nodejs.org)
+[![Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen.svg)](#零依赖--zero-dependencies)
+[![CI](https://github.com/bobliang1979/hermes-tabbit-parliament/actions/workflows/ci.yml/badge.svg)](.github/workflows/ci.yml)
+[![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-
-[![GitHub](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-
-[![Node](https://img.shields.io/badge/node-%3E%3D24-brightgreen)](https://nodejs.org)
-
-[![Platform](https://img.shields.io/badge/platform-Tabbit%20Browser-important)](https://tabbit.com)
-
-[![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen)](CONTRIBUTING.md)
-
-
-
-*不是固定管线。Hermes 每一步思考后决定。*  
-
+*不是固定管线。Hermes 每一步思考后决定。*
 *Not a fixed pipeline. Hermes thinks at every step and decides.*
 
-
-
 </div>
 
+---
 
+## 目录 · Table of Contents
+
+- [核心思想 · Core Idea](#核心思想--core-idea)
+- [5 模型议会 · The Parliament](#5-模型议会--the-parliament)
+- [快速开始 · Quick Start](#快速开始--quick-start)
+- [命令与选项 · CLI](#命令与选项--cli)
+- [工作流模式 · Workflow Patterns](#工作流模式--workflow-patterns)
+- [架构 · Architecture](#架构--architecture)
+- [可靠性设计 · Reliability](#可靠性设计--reliability)
+- [测试 · Testing](#测试--testing)
+- [故障排除 · Troubleshooting](#故障排除--troubleshooting)
+- [项目结构 · Project Structure](#项目结构--project-structure)
+- [License](#license)
 
 ---
 
+## 核心思想 · Core Idea
 
+Hermes Tabbit Parliament turns the AI chat tabs already open in your
+[Tabbit](https://tabbit.com) browser into a **council of specialists**.
+Hermes (the orchestrating agent) drives them over the Chrome DevTools
+Protocol (CDP).
 
-## 📋 目录 | Table of Contents
+Traditional multi-model setups are fixed pipelines: `A → B → C → D`, decided
+before anyone has said anything. This one isn't:
 
+```
+❌ 固定管线: 脚本按预设顺序跑完 5 个模型
+✅ 议会模式: Hermes 分析任务 → 选一个模型提问 → 读回复 → 思考 → 再决定下一步
+```
 
-
-- [🇨🇳 中文](#-中文)
-
-- [🇬🇧 English](#-english)
-
-- [🏛️ Architecture](#-architecture)
-
-- [🚀 Quick Start](#-quick-start)
-
-- [🛠️ Tools](#-tools)
-
-- [📦 Project Structure](#-project-structure)
-
-- [📄 License](#-license)
-
-
+Hermes reads every reply before choosing the next move, so a fact found by the
+researcher can change the question asked of the engineer, and a vulnerability
+found by the reviewer can send the design back for a rewrite.
 
 ---
 
-
-
-## 🇨🇳 中文
-
-
-
-### 核心思想
-
-
-
-**Hermes Tabbit Parliament** 是一个多模型 AI 议会协作框架。Hermes 作为中央大脑，通过 Chrome DevTools Protocol (CDP) 控制 Tabbit 浏览器中的 5 个 AI 模型标签页，实现有意识的交互式推理协作。
-
-
-
-传统多模型协作采用固定流水线（A→B→C→D），每个模型按预设顺序执行，无法根据中间结果动态调整。
-
-
-
-Hermes Tabbit Parliament 颠覆了这一模式：**Hermes 先分析任务，决定问哪个模型，读完回复后再思考，再决定下一步**——如同一个真正的议会，议长根据各方意见动态决策。
-
-
-
-### 5 模型议会制
-
-
-
-| 角色 | 模型 | 职责 |
-
-|------|------|------|
-
-| 🧠 **议长 (Speaker)** | **Hermes** | 任务分析、动态路由、综合输出 |
-
-| 🔍 **研究员 (Researcher)** | **Grok** | 搜索事实、查找库、纠正错误假设 |
-
-| 💬 **工程师 (Engineer)** | **千问 (Qwen)** | 方案设计、代码编写、技术实现 |
-
-| 🤝 **评审官 (Reviewer)** | **Arena Sonnet 4.6** | 审计方案、发现漏洞、安全审查 |
-
-| ✍️ **书记员 (Scribe)** | **智谱清言 (ChatGLM)** | 执笔最终代码、文档生成 |
-
-
-
-### 工作流模式
-
-
-
-#### 🏛️ 议会全流程 — 复杂任务
-
-
-
-```
-
-Step 1: 🔍 Grok 搜索技术细节 → Hermes 分析
-
-Step 2: 💬 千问 设计方案 → Hermes 分析
-
-Step 3: 🤝 Arena 审查方案 → Hermes 分析
-
-Step 4: 🧠 Gemini 综合决策 → Hermes 分析
-
-Step 5: ✍️ 清言 执笔代码 → Hermes 验证输出
-
-```
-
-
-
-#### 🔄 快速验证 — 中等任务
-
-
-
-```
-
-Step 1: 💬 千问 设计方案
-
-Step 2: 🤝 Arena 审查方案
-
-Step 3: Hermes 综合输出
-
-```
-
-
-
-#### ⚡ 直接编码 — 简单任务
-
-
-
-```
-
-Step 1: 💬 千问 写代码
-
-Step 2: Hermes 验证输出
-
-```
-
-
-
-### 技术栈
-
-
-
-| 组件 | 技术 | 说明 |
-
-|------|------|------|
-
-| 浏览器 | Tabbit Browser | Chromium 内核，运行 5 个 AI 模型标签页 |
-
-| 控制协议 | CDP (Chrome DevTools Protocol) | WebSocket 双向通信控制浏览器 |
-
-| 运行时 | Node.js v24+ | 原生 WebSocket，零 npm 依赖 |
-
-| SPA 兼容 | `Input.insertText` | 绕过 React/Angular 变更检测，直接输入 |
-
-| 内容读取 | `document.documentElement.innerText` | 兼容 SPA 不渲染 `<body>` 的问题 |
-
-| 超时处理 | `awaitPromise: false` | 防止 SPA 页面因未解决的 Promise 超时 |
-
-
-
-### 关键特性
-
-
-
-- ✅ **动态决策** — Hermes 根据回复现场决定下一步，非固定管线
-
-- ✅ **上下文隔离** — 每次发送自动新建对话，防止历史污染
-
-- ✅ **多端兼容** — 统一适配 5 个模型的 UI 差异
-
-- ✅ **自愈闭环** — 验证代码语法，发现问题自动回传修复
-
-- ✅ **零依赖** — 仅需 Node.js v24+
-
-
-
-### 真实案例
-
-
-
-在 [Fable-5 Agent 设计](skill/references/fable5-case-study.md) 中，议会模式展现了卓越效果：
-
-
-
-- 🔍 **Grok** 纠正了一个关键的 XML 格式假设——如果按错误假设开发，整个解析器都需要重写
-
-- 💬 **千问** 提出了生产级的 4 层架构设计方案
-
-- 🤝 **Arena** 发现了 **P0 级安全漏洞**（缺少沙箱隔离）和 **OOM 风险**（40GB+ 内存溢出）
-
-- 🧠 **Gemini** 综合所有观点做出了最终架构决策
-
-- ✍️ **清言** 编写了完整的 376 行实现
-
-
-
-这个案例证明：**交互式议会模式比固定管线更灵活、更可靠**。每个模型都能发现其他模型遗漏的问题。
-
-
+## 5 模型议会 · The Parliament
+
+| 模型 / Model | 角色 / Role | 职责 / Responsibility | 别名 / Aliases |
+|---|---|---|---|
+| 🧠 **Gemini** | 议长 / Speaker | 综合多方观点、做最终决策 · synthesize views, final call | `gemini`, `议长`, `speaker` |
+| 🔍 **Grok** | 研究员 / Researcher | 搜索事实、找库、纠正错误假设 · facts, libraries, corrections | `grok`, `研究员`, `researcher` |
+| 💬 **千问 Qwen** | 工程师 / Engineer | 方案设计、代码实现 · design solutions, write code | `qwen`, `qianwen`, `千问`, `通义`, `工程师` |
+| 🤝 **Arena Sonnet** | 评审官 / Reviewer | 挑漏洞、安全审查 · find holes, security review | `arena`, `arena.ai`, `评审官`, `reviewer` |
+| ✍️ **智谱清言 ChatGLM** | 书记员 / Scribe | 执笔最终代码与文档 · write final code and docs | `chatglm`, `glm`, `清言`, `智谱`, `书记员` |
+
+Every alias works anywhere a model name is expected, so both
+`ask 千问 "…"` and `ask qwen "…"` hit the same tab.
+
+**Real-world proof:** in the [Fable-5 Agent case study](skill/references/fable5-case-study.md),
+Grok caught a wrong XML-tag assumption before any code was written, Arena
+found a P0 sandbox-isolation hole and a 40 GB OOM risk, Gemini arbitrated,
+and ChatGLM produced the final implementation. Each model caught something
+the others missed.
 
 ---
 
+## 快速开始 · Quick Start
 
+### 零依赖 · Zero dependencies
 
-## 🇬🇧 English
-
-
-
-### Core Philosophy
-
-
-
-**Hermes Tabbit Parliament** is a multi-model AI parliament collaboration framework. Hermes acts as the central brain, controlling 5 AI model tabs in the Tabbit browser via Chrome DevTools Protocol (CDP), enabling conscious interactive reasoning collaboration.
-
-
-
-Traditional multi-model collaboration uses a fixed pipeline (A→B→C→D), where each model executes in a predetermined order without the ability to adapt based on intermediate results.
-
-
-
-Hermes Tabbit Parliament disrupts this paradigm: **Hermes analyzes the task, decides which model to query, reads the response, thinks about it, then decides the next move** — just like a real parliament where the speaker dynamically steers the discussion based on input from all members.
-
-
-
-### The 5-Model Parliament
-
-
-
-| Role | Model | Responsibility |
-
-|------|-------|---------------|
-
-| 🧠 **Speaker** | **Hermes** | Task analysis, dynamic routing, synthesis |
-
-| 🔍 **Researcher** | **Grok** | Fact-finding, library search, assumption correction |
-
-| 💬 **Engineer** | **Qwen** | Solution design, code writing, implementation |
-
-| 🤝 **Reviewer** | **Arena Sonnet 4.6** | Code audit, vulnerability discovery, security review |
-
-| ✍️ **Scribe** | **ChatGLM** | Final code writing, documentation |
-
-
-
-### Workflow Patterns
-
-
-
-**Full Parliament (Complex Tasks)**
-
-
-
-```
-
-Step 1: 🔍 Grok researches → Hermes analyzes
-
-Step 2: 💬 Qwen designs → Hermes analyzes
-
-Step 3: 🤝 Arena reviews → Hermes analyzes
-
-Step 4: 🧠 Gemini decides → Hermes analyzes
-
-Step 5: ✍️ ChatGLM writes → Hermes verifies
-
-```
-
-
-
-**Quick Review (Medium Tasks)**
-
-
-
-```
-
-Step 1: 💬 Qwen designs solution
-
-Step 2: 🤝 Arena reviews solution
-
-Step 3: Hermes synthesizes → deliver
-
-```
-
-
-
-**Direct Coding (Simple Tasks)**
-
-
-
-```
-
-Step 1: 💬 Qwen writes code
-
-Step 2: Hermes verifies → deliver
-
-```
-
-
-
-### Key Features
-
-
-
-- ✅ **Dynamic decision-making** — Hermes decides each step based on responses, not a fixed pipeline
-
-- ✅ **Context isolation** — Auto-creates new conversations to prevent history contamination
-
-- ✅ **Cross-platform** — Unified adaptation across 5 different AI model UIs
-
-- ✅ **Self-healing loop** — Code syntax verification with auto-fix iteration
-
-- ✅ **Zero dependencies** — Requires only Node.js v24+
-
-
-
-### Production Case Study
-
-
-
-In the [Fable-5 Agent design](skill/references/fable5-case-study.md):
-
-
-
-- 🔍 **Grok** corrected a critical XML format assumption — the entire parser would have been built on wrong foundations
-
-- 💬 **Qwen** proposed a production-grade 4-layer architecture
-
-- 🤝 **Arena** discovered **P0 security vulnerabilities** (missing sandbox isolation) and **OOM risks** (40GB+ memory usage)
-
-- 🧠 **Gemini** synthesized all views into a final architecture decision
-
-- ✍️ **ChatGLM** wrote the complete 376-line implementation
-
-
-
-**This real-world example proves that the interactive parliament model outperforms fixed pipelines: each model catches what others miss.**
-
-
-
----
-
-
-
-## 🏛️ Architecture
-
-
-
-### CDP Communication
-
-
-
-```
-
-┌─────────────────────────────────────────────────┐
-
-│                   Hermes                        │
-
-│         Task Analysis → Decision → Synthesis     │
-
-└────────────────┬──────────┬──────────┬──────────┘
-
-                 │          │          │
-
-    ┌────────────▼──┐ ┌─────▼─────┐ ┌──▼──────────┐
-
-    │   CDP Client  │ │ File I/O  │ │  Code Exec  │
-
-    │  (WebSocket)  │ │ (read/    │ │  (Python/   │
-
-    │               │ │  write)   │ │   Node.js)  │
-
-    └────────────┬──┘ └───────────┘ └─────────────┘
-
-                 │
-
-    ┌────────────▼────────────────────────────────┐
-
-    │           Tabbit Browser (CDP :9222)          │
-
-    ├────────┬────────┬────────┬────────┬─────────┤
-
-    │ Gemini │  Grok  │  Qwen  │ Arena  │ ChatGLM │
-
-    │ (议长)  │ (研究员)│ (工程师)│ (评审官)│ (书记员) │
-
-    └────────┴────────┴────────┴────────┴─────────┘
-
-```
-
-
-
-### Context Isolation
-
-
-
-Each message is sent in a **fresh conversation** to prevent context contamination:
-
-
-
-| Model | Button | Strategy |
-
-|-------|--------|----------|
-
-| Gemini | `New chat` | Text match → click |
-
-| Grok | `新建聊天` | Text match → click |
-
-| Qwen | `新建对话` | Text match → click |
-
-| ChatGLM | `展开` → second `新对话` | Expand sidebar → find second button |
-
-| Arena | `New Chat` | Text match → click |
-
-
-
----
-
-
-
-## 🚀 Quick Start
-
-
-
-### Prerequisites
-
-
-
-- [Tabbit Browser](https://tabbit.com) installed
-
-- Node.js v24+ (native WebSocket)
-
-- 5 AI model tabs open: Gemini, Grok, Qwen, Arena.ai (Sonnet 4.6), ChatGLM
-
-
-
-### 1. Start Tabbit with Debug Mode
-
-
+No `npm install`. Node ≥ 22 provides the global `WebSocket` and `fetch` used
+by the CLI.
 
 ```bash
+node --version   # >= 22
+```
 
+### 1. 用调试模式启动 Tabbit · Start Tabbit with CDP
+
+```powershell
 # Windows
-
 taskkill.exe //F //IM "Tabbit Browser.exe"
-
-"C:/Users/<user>/AppData/Local/Tabbit Browser/Application/Tabbit Browser.exe" \
-
+"C:/Users/<you>/AppData/Local/Tabbit Browser/Application/Tabbit Browser.exe" `
   --remote-debugging-port=9222 --restore-last-session
-
 ```
 
+Keep one tab open and logged in for each model.
 
-
-### 2. Install Tools
-
-
+### 2. 体检 · Diagnose
 
 ```bash
-
-# hermes-tools.js requires no npm install — pure Node.js native WebSocket
-
-cd tools/
-
+node tools/hermes-tools.js doctor
 ```
 
-
-
-### 3. List Models
-
-
-
-```bash latest Python asyncio best practices"
-
-node tools/hermes-tools.js ask gemini "Analyze this architecture for weaknesses"
-
-node tools/hermes-tools.js ask arena "Review this code for security issues"
-
-node tools/hermes-tools.js ask 清言 "Write the final implementation"
-
+```
+🩺 Hermes Parliament — 诊断
+  CDP 端点: http://127.0.0.1:9222
+  TCP 连通: ✅
+  浏览器: Chrome/148...
+  ✅ 🧠 gemini    Gemini
+  ✅ 🔍 grok      Grok
+  ✅ 💬 qwen      千问
+  ✅ 🤝 arena     Arena.ai
+  ✅ ✍️ chatglm   智谱清言
 ```
 
+### 3. 提问 · Ask
 
-
----
-
-
-
-## 🛠️ Tools
-
-
-
-| File | Description |
-
-|------|-------------|
-
-| `tools/hermes-tools.js` | Core interaction tool — list, ask, read, new conversation |
-
-| `tools/fable5_agent.py` | Fable-5 Agent engine example (376 lines) |
-
-| `tools/fable5_server.py` | FastAPI server example for the agent |
-
-| `skill/SKILL.md` | Hermes Agent skill definition (v6.0.0) |
-
-| `skill/references/` | Case studies and technical documentation |
-
-
-
----
-
-
-
-## 📦 Project Structure
-
-
-
-```
-
-├── tools/
-
-│   ├── hermes-tools.js        # Core: model interaction (recommended)
-
-│   ├── fable5_agent.py        # Fable-5 Agent engine (example)
-
-│   └── fable5_server.py       # FastAPI server (example)
-
-├── skill/
-
-│   ├── SKILL.md               # Hermes Agent skill definition
-
-│   └── references/
-
-│       ├── fable5-case-study.md   # Real-world Fable-5 case study
-
-│       ├── cdp-technical-details.md  # CDP protocol details
-
-│       └── ...
-
-├── .gitignore
-
-└── README.md
-
-```
-
-
-
----
-
-
-
-## 📄 License
-
-
-
-MIT © [bobliang1979](https://github.com/bobliang1979)
-
-
-
----
-
-
-
-<div align="center">
-
-  <sub>Built with ❤️ by Hermes Agent + 5 AI models in Tabbit Browser</sub>
-
-</div>
-
-
-
+```bash
 node tools/hermes-tools.js list
-
-```
-
-
-
-### 4. Ask a Model
-
-
-
-```bash
-
-node tools/hermes-tools.js ask 千问 "Write a Python LRU Cache with TTL"
-
-node tools/hermes-tools.js ask grok "Searchp align="center">
-  <img src="https://img.shields.io/badge/status-active-success" alt="Status">
-  <img src="https://img.shields.io/badge/license-MIT-blue" alt="License">
-  <img src="https://img.shields.io/badge/node-%3E%3D24-brightgreen" alt="Node">
-  <img src="https://img.shields.io/badge/platform-Tabbit%20Browser-important" alt="Platform">
-</p>
-
-<br>
-
-<p align="center">
-  <h1 align="center">🧠 Hermes Tabbit Parliament</h1>
-  <p align="center"><strong>Multi-Model AI Parliament — Orchestrate 5 AI models in your browser as a collaborative council</strong></p>
-</p>
-
-<p align="center">
-  <i>Not a fixed pipeline. Hermes thinks at every step, decides which model to ask next, reads the response, and adapts.</i>
-</p>
-
----
-
-## 🌟 Overview
-
-**Hermes Tabbit Parliament** transforms your browser tabs into an **AI council** — 5 different AI models working together as specialized agents, coordinated by Hermes (an orchestrator LLM) through Chrome DevTools Protocol (CDP).
-
-Instead of hardcoding a pipeline, **Hermes dynamically decides** which model to consult based on the task, reads each response, and adapts the next move — just like a real parliament.
-
-### The 5 Models
-
-| Model | Role | Responsibility | How Hermes Uses It |
-|-------|------|---------------|-------------------|
-| 🔍 **Grok** | Researcher | Search facts, find libraries, correct assumptions | "Need to search for latest info" |
-| 💬 **Qwen (千问)** | Engineer | Design architecture, write code | "Need a technical solution" |
-| 🤝 **Arena (Sonnet 4.6)** | Reviewer | Find bugs, security holes, critique | "Got a solution, need it reviewed" |
-| 🧠 **Gemini** | Speaker | Synthesize views, make final decisions | "Multiple opinions, need a decision" |
-| ✍️ **ChatGLM (清言)** | Scribe | Write final production code | "All decisions made, write the code" |
-
-### Real-World Impact
-
-In a production use case ([Fable-5 Agent design](./skill/references/fable5-case-study.md)):
-- 🔍 **Grok** corrected a critical XML format assumption that would have broken the entire parser
-- 💬 **Qwen** proposed the 4-layer architecture
-- 🤝 **Arena** discovered **P0 security issues** (missing sandbox isolation) and **OOM risks** (40GB+ memory)
-- 🧠 **Gemini** synthesized all views into a final architecture decision
-- ✍️ **ChatGLM** wrote the complete implementation (376 lines)
-
----
-
-## 🚀 Quick Start
-
-### Prerequisites
-
-- [Tabbit Browser](https://tabbit.com) installed
-- Node.js v24+ (native WebSocket, no npm modules needed)
-- 5 AI model tabs open in Tabbit: Gemini, Grok, Qwen, Arena.ai (Sonnet 4.6), ChatGLM
-
-### 1. Start Tabbit with CDP Debug Mode
-
-```bash
-# Windows
-taskkill.exe //F //IM "Tabbit Browser.exe"
-
-"C:/Users/<user>/AppData/Local/Tabbit Browser/Application/Tabbit Browser.exe" \
-  --remote-debugging-port=9222 \
-  --restore-last-session
-```
-
-### 2. Verify CDP Connection
-
-```bash
-curl -s http://localhost:9222/json | python3 -c "
-import json, sys
-tabs = json.load(sys.stdin)
-for t in tabs:
-    if t.get('type') == 'page':
-        print(t['title'][:30], '|', t['url'][:60])
-"
-```
-
-### 3. Ask a Model
-
-```bash
-# List available models
-node tools/hermes-tools.js list
-
-# Ask a question (auto-creates new conversation)
-node tools/hermes-tools.js ask 千问 "Write a Python LRU Cache with TTL"
-
-# Read current page content
+node tools/hermes-tools.js ask 千问 "写一个带 TTL 的 Python LRU Cache"
 node tools/hermes-tools.js read grok
-
-# Force new conversation
 node tools/hermes-tools.js new gemini
 ```
 
----
+The answer is printed to **stdout**; progress logs go to **stderr**; a
+markdown copy is saved to `out/` (git-ignored).
 
-## 🏛️ Workflow Patterns
+### 跑一遍完整议会 · Run the whole council
 
-### Pattern A: Full Parliament (Complex Tasks)
-
-```
-Hermes: "This task is complex, run the full parliament"
-
-Step 1: 🔍 ask Grok "Search technical details..."
-  → Hermes reads → discovers critical info
-Step 2: 💬 ask Qwen "Design architecture based on Grok's findings..."
-  → Hermes reads → gets architecture plan
-Step 3: 🤝 ask Arena "Review Qwen's architecture for vulnerabilities..."
-  → Hermes reads → finds security holes
-Step 4: 🧠 ask Gemini "Synthesize all opinions, make final decision..."
-  → Hermes reads → gets final architecture
-Step 5: ✍️ ask ChatGLM "Write final code based on all discussions..."
-  → Hermes reads → gets implementation
-Step 6: Hermes verifies and delivers
+```bash
+./examples/parliament.sh "设计一个支持 10 万并发的实时推送系统"
 ```
 
-### Pattern B: Quick Review (Medium Tasks)
-
-```
-Step 1: 💬 ask Qwen "Design solution..."
-Step 2: 🤝 ask Arena "Review solution..."
-Step 3: Hermes synthesizes → deliver
-```
-
-### Pattern C: Direct Coding (Simple Tasks)
-
-```
-Step 1: 💬 ask Qwen "Write code..."
-Step 2: Hermes verifies → deliver
-```
-
-### Pattern D: Research + Implement
-
-```
-Step 1: 🔍 ask Grok "Search..."
-Step 2: 💬 ask Qwen "Implement based on search..."
-Step 3: Hermes verifies → deliver
-```
+That chains 研究员 → 工程师 → 评审官 → 议长 → 书记员, forwarding a trimmed
+copy of each answer to the next model, and writes every stage to
+`out/parliament-<timestamp>/`. Treat it as a playbook to copy from, not as
+the only way to run a parliament — Hermes can always stop early or reorder.
 
 ---
 
-## ⚙️ How It Works
+## 命令与选项 · CLI
 
-### CDP Protocol
-
-All model interactions happen through Chrome DevTools Protocol WebSocket:
-
-```javascript
-// 1. Connect to an AI model tab
-WebSocket → Target.attachToTarget({ targetId, flatten: true })
-// flatten=true is CRITICAL — responses include sessionId
-
-// 2. Type into chat input (SPA-safe)
-Input.insertText({ text: "Your prompt here" })
-// NOT DOM manipulation — SPA frameworks ignore programmatic input
-
-// 3. Submit
-Input.dispatchKeyEvent({ type: "rawKeyDown", key: "Enter", ... })
-
-// 4. Read response (SPA-compatible)
-Runtime.evaluate({
-  expression: "document.documentElement.innerText",
-  returnByValue: true,
-  awaitPromise: false  // Prevents timeout on heavy SPAs
-})
+```
+node tools/hermes-tools.js <command> [options]
 ```
 
-### Context Isolation (New Chat)
+| 命令 / Command | 作用 / What it does |
+|---|---|
+| `models` | 显示模型注册表（角色 + 匹配规则 + 别名） |
+| `list` (`ls`) | 列出浏览器标签页及其议会角色；`--json` 输出结构化数据 |
+| `ask <模型> <提示>` | 新建对话 → 发送 → 等待回复稳定 → 读取回复 |
+| `read <模型>` | 读取当前页面文本 |
+| `new <模型>` | 新建对话（上下文隔离） |
+| `doctor` | 诊断 CDP 连接、标签页匹配、未识别站点 |
 
-Before each prompt, the tool automatically clicks the "New Chat" button to prevent context contamination:
+### 常用选项 · Options
 
-| Model | Button | Strategy |
-|-------|--------|----------|
-| Gemini | `New chat` | Text match → click |
-| Grok | `新建聊天` | Text match → click |
-| Qwen | `新建对话` | Text match → click |
-| ChatGLM | `展开` → 2nd `新对话` | Expand sidebar → find second button |
-| Arena | `New Chat` | Text match → click |
+| 选项 | 默认 | 说明 |
+|---|---|---|
+| `--port <n>` | `9222` (env `TABBIT_CDP_PORT`) | CDP 端口 |
+| `--host <addr>` | `127.0.0.1` (env `TABBIT_CDP_HOST`) | CDP 主机 |
+| `--timeout <sec>` | `180` | 等待回复的上限 |
+| `--poll <sec>` | `2` | 轮询间隔 |
+| `--stable <n>` | `3` | 连续 n 次文本不变才认为回复结束 |
+| `--no-new` | off | 不新建对话，直接追加到当前会话 |
+| `--no-focus` | off | 不调用 `Page.bringToFront` |
+| `--no-stream-detect` | off | 关闭「生成中」指示灯检测 |
+| `--tail <n>` | off | 只保留回复末尾 n 个字符 |
+| `--out <dir>` | `out/` | 回复保存目录 |
+| `--no-save` | off | 不写文件 |
+| `--json` | off | stdout 输出 JSON 信封（含 status / chars / elapsed / file） |
+| `-` | — | 提示词从 stdin 读取 |
+
+### 退出码 · Exit codes
+
+| Code | 含义 |
+|---|---|
+| `0` | 成功 |
+| `2` | 用法错误（缺参数、未知命令） |
+| `3` | 未找到模型/标签页 |
+| `4` | CDP 不可达（Tabbit 没开调试端口） |
+| `5` | 超时或无回复 |
+
+Because of the exit codes, the CLI composes cleanly in agent loops:
+
+```bash
+node tools/hermes-tools.js ask arena "审查这段架构" --json | jq -r .answer
+echo "写最终实现" | node tools/hermes-tools.js ask 清言 --timeout 300 -
+```
 
 ---
 
-## 📦 Project Structure
+## 工作流模式 · Workflow Patterns
+
+Hermes picks a pattern per task — these are playbooks, not hardcoded flows.
+
+### A. 议会全流程 · Full Parliament（复杂任务）
 
 ```
+🔍 ask grok   "搜索 X 的技术细节"          → Hermes 读 → 发现关键事实
+💬 ask 千问   "基于这些事实设计架构"        → Hermes 读 → 获得方案
+🤝 ask arena  "审查这个方案的漏洞"          → Hermes 读 → 发现 P0 问题
+🧠 ask gemini "综合三方意见做最终决策"      → Hermes 读 → 获得决策
+✍️ ask 清言   "根据决策写最终实现"          → Hermes 读 → 获得代码
+🧠 Hermes 自己验证 → 交付
+```
+
+### B. 快速验证 · Quick Review（中等任务）
+
+```
+💬 ask 千问 "设计方案" → 🤝 ask arena "审查方案" → 🧠 Hermes 综合输出
+```
+
+### C. 直接编码 · Direct Coding（简单任务）
+
+```
+💬 ask 千问 "写这个函数" → 🧠 Hermes 验证 → 交付
+```
+
+### D. 搜索 + 实现 · Research then Implement
+
+```
+🔍 ask grok "搜索最新 API" → 💬 ask 千问 "据此实现" → 🧠 Hermes 验证 → 交付
+```
+
+### 上下文隔离 · Context isolation
+
+By default every `ask` clicks that model's "new chat" control first, so no
+model is polluted by an earlier question. Use `--no-new` when you *want* the
+model to see its own previous turn.
+
+---
+
+## 架构 · Architecture
+
+```
+┌──────────────────────────────────────────────────────────┐
+│                        Hermes                            │
+│         task → pick a model → read → think → repeat       │
+└───────────────┬──────────────────────────────────────────┘
+                │  node tools/hermes-tools.js ask <model> <prompt>
+    ┌───────────▼────────────┐        ┌──────────────────┐
+    │  CDP client (WebSocket)│        │ out/*.md 落盘     │
+    └───────────┬────────────┘        └──────────────────┘
+                │  http://127.0.0.1:9222/json   +   ws://…/devtools/browser/<id>
+    ┌───────────▼──────────────────────────────────────────┐
+    │              Tabbit Browser (Chromium)                │
+    ├────────┬────────┬────────┬─────────┬────────────────┤
+    │ Gemini │  Grok  │  Qwen  │  Arena  │    ChatGLM     │
+    │ 议长    │ 研究员  │ 工程师 │ 评审官  │    书记员       │
+    └────────┴────────┴────────┴─────────┴────────────────┘
+```
+
+### 协议要点 · Protocol notes
+
+| 环节 | 做法 | 原因 |
+|---|---|---|
+| 附加标签 | `Target.attachToTarget` with `flatten: true` | 没有 `flatten` 就没有 `sessionId` |
+| 输入 | `Input.insertText` 分块（3000 字符/块） | React/Angular 忽略程序化 DOM 赋值 |
+| 提交 | `Input.dispatchKeyEvent` rawKeyDown + keyUp | 模拟真实回车 |
+| 读取 | `document.documentElement.innerText` | 部分 SPA 不渲染 `<body>` |
+| 读取 | `awaitPromise: false` | 重型 SPA 主线程忙时会挂死 |
+| 完成判定 | 文本连续 N 次轮询不变 + 无「停止生成」按钮 | 固定 sleep 不是早截断就是白等 |
+
+See [skill/references/cdp-technical-details.md](skill/references/cdp-technical-details.md)
+for the per-model UI quirks, and [skill/SKILL.md](skill/SKILL.md) for the
+skill definition an agent can load to drive all of this.
+
+---
+
+## 可靠性设计 · Reliability
+
+The original one-file tool slept 25 s and hoped for the best. v2 makes each
+failure mode explicit:
+
+| 风险 / Risk | v1 | v2 |
+|---|---|---|
+| 回复被截断 / truncated reply | 固定 sleep 25 s | 轮询至文本稳定（`--stable`）+ 「生成中」指示灯检测 |
+| 提问打到错的标签 / wrong tab | 标题子串匹配（`chrome://glic/` 也叫 Gemini） | URL + 标题规则 + `exclude` 黑名单 |
+| `/json` 被限流 | 直接崩 | 503 自动退避重试 |
+| 模型没开 | 静默无输出 | `doctor` 逐模型体检 + 退出码 4/3 |
+| 输出污染仓库 | 仓库根目录散落 `hermes_ask_*.md` | 统一写入 `out/`（gitignore） |
+| 无法被脚本消费 | 日志与答案混在 stdout | 答案→stdout，日志→stderr，`--json` 信封 |
+| 卡死 | 未清理的定时器 | 所有请求带超时，会话结束时清理 |
+
+---
+
+## 测试 · Testing
+
+```bash
+npm test
+```
+
+26 tests, no browser and no network required:
+
+- `test/hermes-tools.test.js` — pure logic: model resolution, alias matching,
+  `chrome://glic/` exclusion, completion detection, answer extraction, chunking,
+  argument parsing.
+- `test/mock-cdp.js` — a dependency-free mock CDP endpoint (HTTP + WebSocket,
+  hand-rolled frames) that simulates a streaming reply.
+- `test/cli.test.js` — spawns the real CLI against that mock and asserts on
+  exit codes, stdout JSON, saved files, and the CDP calls actually made.
+
+CI (`.github/workflows/ci.yml`) runs the suite on Node 22 and 24, smoke-tests
+the CLI, and byte-compiles the Python examples.
+
+---
+
+## 故障排除 · Troubleshooting
+
+| 现象 | 原因 | 处理 |
+|---|---|---|
+| `无法连接 Tabbit CDP` (exit 4) | Tabbit 没带调试端口启动 | 加 `--remote-debugging-port=9222` 重启 |
+| `未找到模型 "x"` (exit 3) | 标签页没开或标题变了 | `list` 看在线标签，必要时在 `MODELS` 加规则 |
+| 匹配到 `chrome://glic/` | 内部页面也叫 Gemini | 已被 `exclude` 拦截；仍异常请升级到 v2 |
+| 回复很短 (status `timeout`) | 模型还在生成 | 加大 `--timeout`，或 `--stable 2` 提前收尾 |
+| 找到输入框失败 | 页面需要登录 / 结构变了 | 手动打开一次该站点登录；检查 `MODELS[id].input` |
+| 答案里混着侧边栏 | SPA 重排导致基线失效 | 用 `--tail N` 或让 Hermes 只取末尾 |
+| Node 报 `WebSocket is not defined` | Node < 22 | 升级 Node（≥ 22 有全局 WebSocket） |
+
+---
+
+## 项目结构 · Project Structure
+
+```
+hermes-tabbit-parliament/
+├── examples/
+│   └── parliament.sh          # 模式 A「议会全流程」的可运行示例脚本
 ├── tools/
-│   ├── hermes-tools.js        # Core: model interaction tool (recommended)
-│   ├── fable5_agent.py        # Fable-5 Agent engine (example output)
-│   └── fable5_server.py       # FastAPI server (example output)
+│   ├── hermes-tools.js        # CLI — 控制 5 个模型（零依赖）
+│   ├── fable5_agent.py        # 议会产出的示例：Fable-5 Agent 引擎
+│   └── fable5_server.py       # 议会产出的示例：FastAPI 服务器
 ├── skill/
-│   ├── SKILL.md               # Hermes Agent skill definition
-│   └── references/            # Case studies and docs
+│   ├── SKILL.md               # Agent 技能定义（教 LLM 如何驱动议会）
+│   └── references/
+│       ├── fable5-case-study.md      # 真实交互记录
+│       ├── cdp-technical-details.md  # CDP 与各模型 UI 细节
+│       ├── hermes-workflow.md        # Hermes 的交互式决策流
+│       ├── parliament-legacy.md      # v4 固定管线（历史参考）
+│       └── orchestrator-legacy.md    # v3 编排器（历史参考）
+├── test/
+│   ├── hermes-tools.test.js   # 纯逻辑单测
+│   ├── cli.test.js            # CLI 端到端测试
+│   └── mock-cdp.js            # 零依赖 CDP mock 服务器
+├── .github/workflows/ci.yml
+├── CONTRIBUTING.md
+├── LICENSE
 └── README.md
 ```
 
 ---
 
-## 🧪 Real-World Case Study
-
-See the full [Fable-5 Agent Design](./skill/references/fable5-case-study.md) for a complete walkthrough of:
-- How Grok corrected a wrong XML format assumption
-- How Arena discovered P0 security vulnerabilities
-- How Gemini synthesized all views into a final architecture
-- The complete 376-line agent engine that resulted
-
----
-
-## 🛠️ Technical Requirements
-
-| Requirement | Version | Why |
-|------------|---------|-----|
-| Tabbit Browser | Latest | Chromium-based browser with AI chat tabs |
-| Node.js | v24+ | Native `WebSocket` global (no npm install) |
-| Python | 3.11+ | For example agent scripts |
-| OS | Windows | (Tabbit is Windows-native) |
-
----
-
-## 📄 License
+## License
 
 MIT © [bobliang1979](https://github.com/bobliang1979)
 
 ---
 
-<p align="center">
+<div align="center">
   <sub>Built with ❤️ by Hermes Agent + 5 AI models in Tabbit Browser</sub>
-</p>
+</div>

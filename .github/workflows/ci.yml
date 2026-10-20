@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    name: node --test (Node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ["22", "24"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - run: node --version
+      - run: npm test
+
+  smoke:
+    name: CLI smoke test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: --help / --version / models work without a browser
+        run: |
+          node tools/hermes-tools.js --help
+          node tools/hermes-tools.js --version
+          node tools/hermes-tools.js models
+      - name: unreachable CDP exits 4, not a stack trace
+        run: |
+          set +e
+          node tools/hermes-tools.js --port 1 doctor
+          code=$?
+          set -e
+          test "$code" -eq 4
+
+  python:
+    name: python examples compile
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python -m compileall -q tools/fable5_agent.py tools/fable5_server.py

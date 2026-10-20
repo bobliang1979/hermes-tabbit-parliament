@@ -50,6 +50,6 @@ Step 3: 🔄 Hermes 迭代
 
 ## 工具文件
 
-- `~/Desktop/hermes-tools.js` — Hermes 用来控制 Tabbit 的工具集
-- `~/Desktop/orchestrator.js` (v3) — 旧的顺序流水线（保留兼容）
-- `~/Desktop/parliament.js` (v4) — 旧的议会脚本（保留兼容）
+- `tools/hermes-tools.js` — Hermes 用来控制 Tabbit 的工具集（v2 CLI）
+- `skill/references/orchestrator-legacy.md` (v3) — 旧的顺序流水线（历史参考）
+- `skill/references/parliament-legacy.md` (v4) — 旧的议会脚本（历史参考）
